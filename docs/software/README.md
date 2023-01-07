@@ -259,5 +259,130 @@ COMMIT;
 
 ```
 
-- RESTfull сервіс для управління даними
+## RESTfull сервіс для управління даними
 
+### Файл сервера
+
+```
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const port = 5000;
+const host = '0.0.0.0';
+
+const app = express();
+
+app.use(bodyParser.text());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/user', require('./controls'));
+
+app.listen(port, host, () => {
+  console.log(`Server started: ${host}:${port}`);
+});
+```
+
+### Файл обробника
+
+```
+const { Router } = require("express");
+const mysql = require('mysql2/promise');
+const { extend } = require('lodash');
+
+
+const sql = {
+    createUser: `INSERT INTO USER(ID, USERNAME, EMAIL, PASSWORD, AVATAR, DONATE_ID, ROLE_ID) VALUES (:id, :username, :email, :password, :avatar, :donate_id, :role_id)`,
+    readUserByID: `SELECT * FROM USER WHERE ID = :id`,
+    readAllUser: `SELECT * FROM USER`,
+    updateUserByID: `UPDATE USER SET USERNAME= :username, EMAIL= :email, PASSWORD= :password, AVATAR= :avatar, DONATE_ID= donate_id, ROLE_ID= :role_id WHERE ID= :id`,
+    deleteUserByID: `DELETE FROM USER WHERE ID = :id`,
+  };
+  
+  const executeSQL = async (query, values) => {
+    let connection;
+    let sqlStatement;
+    try {
+      connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'Socket$2406',
+        database: 'imbaza',
+        namedPlaceholders: true
+      });
+      sqlStatement = connection.format(query, values);
+
+    const [ results, fields ] = await connection.execute(sqlStatement);
+    return results;
+  } catch (err) {
+    throw new Error(`SQL: ${sqlStatement} - ${err.toString()}`);
+  } finally {
+    if (connection) connection.end();
+  }
+};
+
+const router = Router();
+
+router.post('/:id', async (req, res) => {
+  try {
+    const values = extend({}, req.body, req.params);
+    let result = await executeSQL(sql.createUser, values);
+    result = await executeSQL(sql.readUserByID, req.params);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send({
+      status: 500,
+      error: `${err.toString()}`
+    });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    let result = await executeSQL(sql.readAllUser);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send(err.toString());
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    let result = await executeSQL(sql.readUserByID, req.params);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send({
+        status: 500,
+        error: `${err.toString()}`
+      });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  try {
+    const values = extend({}, req.body, req.params);
+    let result = await executeSQL(sql.updateUserByID, values);
+    result = await executeSQL(sql.readUserByID, req.params);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send({
+        status: 500,
+        error: `${err.toString()}`
+      });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    let result = await executeSQL(sql.readUserByID, req.params);
+    await executeSQL(sql.deleteUserByID, req.params);
+    res.status(200).send(result);
+  } catch (err) {
+    return res.status(500).send({
+        status: 500,
+        error: `${err.toString()}`
+    });
+  }
+});
+
+module.exports = router;
+```
