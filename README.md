@@ -5,3 +5,5 @@
 ### Виконаd:
 
 * Андрій Щегель (telegram: [SolarUlt](https://t.me/SolarUlt))
+
+**[Посилання на проект](https://andrijshchegel.github.io/open-data-management-system/)**
