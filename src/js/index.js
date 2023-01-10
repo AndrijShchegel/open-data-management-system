@@ -9,7 +9,7 @@ const app = express();
 app.use(bodyParser.text());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/user', require('./controls'));
+app.use('/editForm', require('./controls'));
 
 app.listen(port, host, () => {
   console.log(`Server started: ${host}:${port}`);
