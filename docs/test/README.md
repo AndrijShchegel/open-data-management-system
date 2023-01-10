@@ -4,22 +4,22 @@
 ![](./starting_server.png)
 
 ## Перевірка даних (Get)
-![](./get_parameters.png)
+![](./get_db.png)
 
-## Перевірка користувача 1 (Get:id)
-![](./get_parameters.png)
+## Перевірка сутності 1 (Get:id)
+![](./get_db_by_id.png)
 
-## Створення нового користувача (POST)
-![](./post_user_4.png)
+## Створення нової сутності (POST)
+![](./post_form_3.png)
 ## Перевірка
-![](./get_after_posting.png)
+![](./post_check.png)
 
-## Зміна параметрів користувача (PUT)
-![](./put_user_4.png)
+## Зміна параметрів сутності (PUT)
+![](./put_form_3.png)
 ## Перевірка
-![](./get_after_put.png)
+![](./put_check.png)
 
-## Видалення користувача (Delete)
-![](./delete_user_4.png)
+## Видалення сутності (Delete)
+![](./delete_form_3.png)
 ## Перевірка
-![](./get_after_deleting.png)
+![](./delete_check.png)
