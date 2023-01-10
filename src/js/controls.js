@@ -4,11 +4,11 @@ const { extend } = require('lodash');
 
 
 const sql = {
-    createUser: `INSERT INTO USER(ID, USERNAME, EMAIL, PASSWORD, AVATAR, DONATE_ID, ROLE_ID) VALUES (:id, :username, :email, :password, :avatar, :donate_id, :role_id)`,
-    readUserByID: `SELECT * FROM USER WHERE ID = :id`,
-    readAllUser: `SELECT * FROM USER`,
-    updateUserByID: `UPDATE USER SET USERNAME= :username, EMAIL= :email, PASSWORD= :password, AVATAR= :avatar, DONATE_ID= donate_id, ROLE_ID= :role_id WHERE ID= :id`,
-    deleteUserByID: `DELETE FROM USER WHERE ID = :id`,
+    createEditForm: `INSERT INTO EDITFORM(ID, EDITORUSERNAME, OLDFILE_CSV, NEWFILE_CSV, EDITDATE, DATAFILE_ID, DATAFILE_CATEGORY_ID) VALUES (:id, :editorusername, :oldfile_csv, :newfile_csv, :editdate, :datafile_id, :datafile_category_id)`,
+    readEditFormByID: `SELECT * FROM EDITFORM WHERE ID = :id`,
+    readAllEditForm: `SELECT * FROM EDITFORM`,
+    updateEditFormByID: `UPDATE EDITFORM SET EDITORUSERNAME= :editorusername, OLDFILE_CSV= :oldfile_csv, NEWFILE_CSV= :newfile_csv, EDITDATE= :editdate, DATAFILE_ID= datafile_id, DATAFILE_CATEGORY_ID= :datafile_category_id WHERE ID= :id`,
+    deleteEditFormByID: `DELETE FROM EDITFORM WHERE ID = :id`,
   };
   
   const executeSQL = async (query, values) => {
@@ -38,8 +38,8 @@ const router = Router();
 router.post('/:id', async (req, res) => {
   try {
     const values = extend({}, req.body, req.params);
-    let result = await executeSQL(sql.createUser, values);
-    result = await executeSQL(sql.readUserByID, req.params);
+    let result = await executeSQL(sql.createEditForm, values);
+    result = await executeSQL(sql.readEditFormByID, req.params);
     res.status(200).send(result);
   } catch (err) {
     return res.status(500).send({
@@ -51,7 +51,7 @@ router.post('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    let result = await executeSQL(sql.readAllUser);
+    let result = await executeSQL(sql.readAllEditForm);
     res.status(200).send(result);
   } catch (err) {
     return res.status(500).send(err.toString());
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    let result = await executeSQL(sql.readUserByID, req.params);
+    let result = await executeSQL(sql.readEditFormByID, req.params);
     res.status(200).send(result);
   } catch (err) {
     return res.status(500).send({
@@ -73,8 +73,8 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const values = extend({}, req.body, req.params);
-    let result = await executeSQL(sql.updateUserByID, values);
-    result = await executeSQL(sql.readUserByID, req.params);
+    let result = await executeSQL(sql.updateEditFormByID, values);
+    result = await executeSQL(sql.readEditFormByID, req.params);
     res.status(200).send(result);
   } catch (err) {
     return res.status(500).send({
@@ -86,8 +86,8 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    let result = await executeSQL(sql.readUserByID, req.params);
-    await executeSQL(sql.deleteUserByID, req.params);
+    let result = await executeSQL(sql.readEditFormByID, req.params);
+    await executeSQL(sql.deleteEditFormByID, req.params);
     res.status(200).send(result);
   } catch (err) {
     return res.status(500).send({
